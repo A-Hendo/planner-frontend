@@ -1,0 +1,20 @@
+#+TITLE: Frontend Notes
+
+* Names
+    - Lemony
+    - Lemonade
+    - Lemonaide
+    - Lemonaid
+* MVP
+    - Aim only for Pro version alpha release, ignore everything else about Studios
+** TODO: Need to verify refresh and access tokens work properly (need to fix login state)
+** TODO: Form validations
+** TODO: Design all UI
+** DONE: Edit tasks
+** TODO: Add task order field
+** DONE: Update task status on move
+** TODO: Add protected routes (kind of done)
+** TODO: Add image uploading for avatars
+** TODO: Add formatting to text description
+** TODO: Add assign & dependent fields to task modal
+** DONE: Create/Edit Studios
