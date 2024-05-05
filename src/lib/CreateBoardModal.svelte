@@ -38,7 +38,6 @@
         isLoading = true;
         Client.post("/board", data)
             .then((response) => {
-                console.log(response);
                 modalStore.close();
             })
             .catch((error) => console.log(error));
@@ -84,11 +83,11 @@
             </label>
         {/if}
         <footer class="modal-footer {parent.regionFooter}">
-            <button class="btn variant-ghost" on:click={parent.onClose}
+            <button class="btn btn-sm variant-ghost" on:click={parent.onClose}
                 >{parent.buttonTextCancel}</button
             >
             <LoadingButton
-                class="btn variant-filled-primary order-last"
+                class="btn variant-filled-primary order-last btn-sm"
                 text="Create"
                 icon={SquarePlus}
                 {isLoading}

@@ -3,8 +3,10 @@ import { writable } from "svelte/store";
 
 export const tasks = writable<[]>([]);
 
-export async function GetTasks(id: string) {
-    const response = await Client.get(`/task/board/${id}`)
+export async function GetTasks(id: string, params: string = "") {
+    const url = params ? `/task/board/${id}?${params}` : `/task/board/${id}`;
+    const response = await Client.get(url);
+
     if (response.status !== 200)
         return;
 
@@ -25,10 +27,10 @@ export async function GetTasks(id: string) {
         }
     });
     let buildTasks = [
-        { id: 1, name: "To Do", items: todo, showInlineInput: false },
-        { id: 2, name: "In Progress", items: inProgress, showInlineInput: false },
-        { id: 3, name: "In Review", items: verification, showInlineInput: false },
-        { id: 4, name: "Done", items: done, showInlineInput: false },
+        { id: 1, name: "To Do", items: todo, showInlineInput: false, class: "border-gray-600" },
+        { id: 2, name: "In Progress", items: inProgress, showInlineInput: false, class: "border-blue-600" },
+        { id: 3, name: "In Review", items: verification, showInlineInput: false, class: "border-yellow-400" },
+        { id: 4, name: "Done", items: done, showInlineInput: false, class: "border-green-600" },
     ];
     tasks.set(buildTasks);
 }

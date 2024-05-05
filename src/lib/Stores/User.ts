@@ -1,4 +1,5 @@
 import { browser } from "$app/environment";
+import type { User } from "$lib/types";
 import { writable, type Writable } from "svelte/store";
 
 let _access = browser ? localStorage.getItem("access_token") : "";
@@ -12,8 +13,7 @@ export const accessToken = writable<string>(_access ? _access : "");
 export const refreshToken = writable<string>(_refresh ? _refresh : "");
 export const tokenExpiry = writable<number>(_expiry ? _expiry : 0);
 export const isLoggedIn = writable<boolean>(false);
-export const user = writable<any>(_user ? JSON.parse(_user) : "");
-
+export const user = writable<User>(_user ? JSON.parse(_user) : "");
 
 accessToken.subscribe((value) => {
     if (value) {

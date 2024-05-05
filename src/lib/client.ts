@@ -11,12 +11,12 @@ import { get } from "svelte/store";
 
 export const Client = axios.create({
     baseURL: "http://localhost:8000/v0",
+    headers: { 'Content-Type': 'application/json' },
 })
 
 function createAxiosRequestInterceptor() {
     const interceptor = Client.interceptors.request.use(
         (config) => {
-            console.log(`Logged in: ${get(isLoggedIn)}`);
             if (new Date().getTime() >= get(tokenExpiry)) {
                 Client.interceptors.request.eject(interceptor);
                 Client.get("/refresh", { headers: { Authorization: `Bearer ${get(refreshToken)} ` } }).then(response => {

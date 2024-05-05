@@ -27,13 +27,13 @@
 </script>
 
 <div class="card p-4 shadow-xl space-y-4">
-    <header class="text-2xl font-bold text-center">Create Studio</header>
+    <header class="text-2xl font-bold text-center">Create Team</header>
     <form
         on:submit={onFormSubmit}
-        class="border border-surface-500 p-4 space-y-4 rounded-container-token"
+        class="p-4 space-y-4 rounded-container-token"
     >
         <label class="label">
-            <span>Studio Name</span>
+            <span>Team Name</span>
             <input
                 required
                 class="input p-1"
@@ -42,11 +42,11 @@
             />
         </label>
         <footer class="modal-footer {parent.regionFooter}">
-            <button class="btn variant-ghost" on:click={parent.onClose}
+            <button class="btn btn-sm variant-ghost" on:click={parent.onClose}
                 >{parent.buttonTextCancel}</button
             >
             <LoadingButton
-                class="btn variant-filled-primary order-last"
+                class="btn btn-sm variant-filled-primary order-last"
                 text="Create"
                 icon={SquarePlus}
                 {isLoading}

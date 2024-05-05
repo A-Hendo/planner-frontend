@@ -22,6 +22,7 @@ export type Studio = {
 };
 
 export type User = {
+    initials: string;
     id: string;
     username: string;
     type: number;

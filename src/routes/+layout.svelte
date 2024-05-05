@@ -1,6 +1,8 @@
 <script lang="ts">
     import BoardSettings from "$lib/Blocks/BoardSettings.svelte";
     import StudioDrawer from "$lib/Blocks/StudioDrawer.svelte";
+    import PasswordModal from "$lib/Components/PasswordModal.svelte";
+    import TaskDrawer from "$lib/Components/TaskDrawer.svelte";
     import CreateBoardModal from "$lib/CreateBoardModal.svelte";
     import CreateStudioModal from "$lib/CreateStudioModal.svelte";
     import LoginModal from "$lib/LoginModal.svelte";
@@ -29,7 +31,7 @@
     initializeStores();
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
-    const taskData = {
+    let taskData = {
         title: "",
         description: "",
         group: "",
@@ -45,21 +47,26 @@
     const modalRegistry: Record<string, ModalComponent> = {
         loginModal: { ref: LoginModal },
         registerModal: { ref: SignUpModal },
+        passwordModal: { ref: PasswordModal },
         createBoardModal: { ref: CreateBoardModal },
         createStudioModal: { ref: CreateStudioModal },
-        taskModal: { ref: TaskModal, props: { data: taskData } },
+        taskModal: {
+            ref: TaskModal,
+            props: { data: taskData, isEdit: false },
+        },
     };
     const drawerStore = getDrawerStore();
 </script>
 
 <Modal components={modalRegistry} />
+
 <Drawer class="bg-white">
     {#if $drawerStore.id === "settings"}
         <BoardSettings />
     {:else if $drawerStore.id === "studio"}
         <StudioDrawer />
-    {:else}
-        hello not settings
+    {:else if $drawerStore.id === "task"}
+        <TaskDrawer />
     {/if}
 </Drawer>
 

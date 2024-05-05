@@ -1,24 +1,34 @@
 <script lang="ts">
+    import TaskFilters from "$lib/Blocks/TaskFilters.svelte";
     import DraggableList from "$lib/DraggableList.svelte";
     import { board } from "$lib/Stores/Boards";
-    import { getModalStore, type ModalSettings } from "@skeletonlabs/skeleton";
-    import { SquarePlus } from "lucide-svelte";
+    import { popup, type PopupSettings } from "@skeletonlabs/skeleton";
+    import { ListFilter } from "lucide-svelte";
     import type { PageData } from "./$types";
 
-    export let data: PageData;
-    const modalStore = getModalStore();
+    export const data: PageData = {};
 
-    const taskModal: ModalSettings = {
-        type: "component",
-        component: "taskModal",
+    const filtersPopup: PopupSettings = {
+        event: "click",
+        target: "filtersPopup",
     };
 </script>
 
-<div class="w-100 flex flex-col py-3">
-    <div class="justify-between">
-        <div>
-            <h3 class="h3 mx-4">{$board.name}</h3>
-        </div>
-    </div>
-    <DraggableList />
+<div class="justify-between border-b-1 shadow-sm flex">
+    <h3 class="h3 m-4">{$board.name}</h3>
+    <button
+        class="btn btn-sm variant-filled-primary float-end m-4"
+        use:popup={filtersPopup}
+        ><ListFilter size="16" class="mr-2" /> Filters</button
+    >
 </div>
+
+<section class="h-svh overflow-y-hidden">
+    <div class="pt-3 relative">
+        <div data-popup="filtersPopup">
+            <div class="arrow bg-primary-500" />
+            <TaskFilters />
+        </div>
+        <DraggableList />
+    </div>
+</section>

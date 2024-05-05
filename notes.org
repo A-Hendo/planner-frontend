@@ -8,13 +8,18 @@
 * MVP
     - Aim only for Pro version alpha release, ignore everything else about Studios
 ** TODO: Need to verify refresh and access tokens work properly (need to fix login state)
-** TODO: Form validations
-** TODO: Design all UI
 ** DONE: Edit tasks
-** TODO: Add task order field
 ** DONE: Update task status on move
 ** TODO: Add protected routes (kind of done)
-** TODO: Add image uploading for avatars
-** TODO: Add formatting to text description
-** TODO: Add assign & dependent fields to task modal
+** TODO: Design UI
 ** DONE: Create/Edit Studios
+** TODO: Add right click menu to cards
+** TODO: Add that svelte local storage package
+
+
+** TODO: Make it so free accounts cannot move state columns & have little customisation
+** TODO: Add formatting to text description
+** TODO: Add image uploading for avatars
+** TODO: Form validations
+** TODO: Add task order field
+** TODO: Add assign & dependent fields to task modal

@@ -3,7 +3,7 @@
     import { AppShell } from "@skeletonlabs/skeleton";
 </script>
 
-<AppShell slotSidebarLeft="">
+<AppShell slotSidebarLeft="board-nav h-content">
     <svelte:fragment slot="header"></svelte:fragment>
     <svelte:fragment slot="sidebarLeft">
         <BoardNavigation />

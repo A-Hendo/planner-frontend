@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { Client } from "$lib/client";
     import {
         accessToken,
         isLoggedIn,
         refreshToken,
         user,
     } from "$lib/Stores/User";
+    import { Client } from "$lib/client";
     import { onMount } from "svelte";
     let savestore = false;
 

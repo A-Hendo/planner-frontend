@@ -31,7 +31,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@auth/sveltekit": "^0.15.0",
     "@floating-ui/dom": "^1.6.3",
     "axios": "^1.6.8",
     "lucide-svelte": "^0.372.0"

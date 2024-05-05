@@ -2,6 +2,8 @@ import { skeleton } from '@skeletonlabs/tw-plugin';
 import forms from '@tailwindcss/forms';
 import { join } from 'path';
 import type { Config } from 'tailwindcss';
+import { fontFamily } from "tailwindcss/defaultTheme";
+
 
 const config = {
   // 2. Opt for dark mode to be handled via the class method
@@ -15,7 +17,11 @@ const config = {
     )
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'sans': ['"ubuntu"', ...fontFamily.sans],
+      }
+    },
   },
   plugins: [
     // 4. Append the Skeleton plugin (after other plugins)

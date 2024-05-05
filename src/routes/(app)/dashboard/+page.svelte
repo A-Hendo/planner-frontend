@@ -8,7 +8,7 @@
     import { Plus } from "lucide-svelte";
     import type { PageData } from "./$types";
 
-    export let data: PageData;
+    export const data: PageData = {};
 
     const modalStore = getModalStore();
     const createStudioModal: ModalSettings = {
@@ -19,7 +19,7 @@
 
 <main class="container mx-auto">
     <div class="py-8">
-        <h2 class="font-bold m-3">YOUR STUDIOS</h2>
+        <h2 class="font-bold m-3">YOUR TEAMS</h2>
         <ul class="flex flex-row flex-wrap">
             <li class="p-1 w-40 h-40">
                 <button

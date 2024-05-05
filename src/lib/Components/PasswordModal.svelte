@@ -1,24 +1,23 @@
 <script lang="ts">
-    import { getModalStore, type ModalSettings } from "@skeletonlabs/skeleton";
+    import LoadingButton from "$lib/Components/LoadingButton.svelte";
+    import { Client } from "$lib/client";
+    import { getModalStore } from "@skeletonlabs/skeleton";
     import { SendHorizontal } from "lucide-svelte";
     import type { SvelteComponent } from "svelte";
-    import LoadingButton from "./Components/LoadingButton.svelte";
-    import { Client } from "./client";
 
     export let parent: SvelteComponent;
 
     const modalStore = getModalStore();
     let data = {
-        email: "",
         password: "",
-        username: "",
-        password_repeat: "",
+        new_password: "",
+        new_password_repeat: "",
     };
 
     async function onFormSubmit(): Promise<void> {
-        const response = await Client.post("/register", data);
+        const response = await Client.post("/password", data);
 
-        if (response.status === 201) {
+        if (response.status === 200) {
             modalStore.close();
         }
     }
@@ -35,25 +34,7 @@
         on:submit={onFormSubmit}
     >
         <label class="label">
-            <span>Username</span>
-            <input
-                required
-                class="input p-1"
-                type="text"
-                bind:value={data.username}
-            />
-        </label>
-        <label class="label">
-            <span>Email</span>
-            <input
-                required
-                class="input p-1"
-                type="email"
-                bind:value={data.email}
-            />
-        </label>
-        <label class="label">
-            <span>Password</span>
+            <span>Current password</span>
             <input
                 required
                 class="input p-1"
@@ -62,18 +43,27 @@
             />
         </label>
         <label class="label">
-            <span>Repeat Password</span>
+            <span>New password</span>
             <input
                 required
                 class="input p-1"
                 type="password"
-                bind:value={data.password_repeat}
+                bind:value={data.new_password}
+            />
+        </label>
+        <label class="label">
+            <span>Repeat new password</span>
+            <input
+                required
+                class="input p-1"
+                type="password"
+                bind:value={data.new_password_repeat}
             />
         </label>
         <footer class="modal-footer {parent.regionFooter}">
             <LoadingButton
                 class="btn btn-sm variant-filled-primary order-last m-1 w-full"
-                text="Sign up"
+                text="Change Password"
                 icon={SendHorizontal}
             ></LoadingButton>
         </footer>

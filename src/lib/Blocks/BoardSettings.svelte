@@ -45,14 +45,10 @@
 >
     <h3 class="h3 text-center">Board Settings</h3>
     <div class="flex flex-col justify-center items-center my-4">
-        <Avatar
-            src="https://images.unsplash.com/photo-1617296538902-887900d9b592?ixid=M3w0Njc5ODF8MHwxfGFsbHx8fHx8fHx8fDE2ODc5NzExMDB8&ixlib=rb-4.0.3&w=128&h=128&auto=format&fit=crop"
-            width="w-16"
-            rounded="rounded-full"
-        />
+        <Avatar initials={$board.name[0]} width="w-16" rounded="rounded" />
     </div>
-    <div class="space-y-2 my-2">
-        <label class="flex items-center space-x-2">
+    <div class="space-y-2 my-2 h-full">
+        <label class="flex items-center space-x-2 m-2">
             <input
                 class="checkbox"
                 type="checkbox"
@@ -62,13 +58,15 @@
             <p>Deactivate</p>
         </label>
     </div>
-    <div class="space-y-2 my-4">
-        <button class="my-2 btn variant-filled-primary">Save Settings</button>
+    <div class="my-4 w-full flex-col">
         {#if !$board.active}
             <button
-                class="my-2 btn variant-ghost-primary"
+                class="my-2 btn btn-sm w-full variant-ghost-primary"
                 on:click={() => modalStore.trigger(modal)}>Delete Board</button
             >
         {/if}
+        <button class="my-2 btn btn-sm w-full variant-filled-primary"
+            >Save Settings</button
+        >
     </div>
 </form>

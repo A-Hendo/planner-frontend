@@ -1,23 +1,21 @@
-<!-- svelte-ignore a11y-label-has-associated-control -->
 <script lang="ts">
     import { page } from "$app/stores";
+    import LoadingButton from "$lib/Components/LoadingButton.svelte";
+    import { GetTasks } from "$lib/Stores/Tasks";
+    import { Client } from "$lib/client";
     import {
         Autocomplete,
         InputChip,
         ListBox,
         ListBoxItem,
+        getDrawerStore,
         getModalStore,
         popup,
         type AutocompleteOption,
+        type ModalSettings,
         type PopupSettings,
     } from "@skeletonlabs/skeleton";
     import { Bug, FilePlus, SquarePlus } from "lucide-svelte";
-    import type { SvelteComponent } from "svelte";
-    import LoadingButton from "./Components/LoadingButton.svelte";
-    import { GetTasks } from "./Stores/Tasks";
-    import { Client } from "./client";
-
-    export let parent: SvelteComponent;
 
     export let data: {} = {
         title: "",
@@ -32,13 +30,14 @@
         state: 1,
     };
 
-    export let isEdit = false;
+    let initialData;
+
     let isLoading = false;
 
-    const modalStore = getModalStore();
-    if ($modalStore[0]?.meta?.data) {
-        data = $modalStore[0].meta.data;
-        isEdit = $modalStore[0].meta.isEdit;
+    const drawerStore = getDrawerStore();
+    if ($drawerStore?.meta?.data) {
+        data = $drawerStore.meta.data;
+        initialData = data;
     }
 
     const inputChipUsers: AutocompleteOption<string>[] = [
@@ -78,19 +77,12 @@
     async function onFormSubmit(): Promise<void> {
         isLoading = true;
         try {
-            if (isEdit) {
-                const response = await Client.put(`/task/${data.id}`, data);
-            } else {
-                const response = await Client.post(
-                    `/task/board/${$page.params.id}`,
-                    data,
-                );
-            }
-            modalStore.close();
+            const response = await Client.put(`/task/${data.id}`, data);
+            drawerStore.close();
+            await GetTasks($page.params.id);
         } catch (error) {
         } finally {
             isLoading = false;
-            await GetTasks($page.params.id);
         }
     }
 
@@ -99,80 +91,77 @@
         target: "popupAutocomplete",
         placement: "bottom",
     };
+    const modalStore = getModalStore();
 
     async function DeleteTask() {
         const response = await Client.delete(`/task/${data.id}`);
         if (response.status === 200) {
             modalStore.close();
+            drawerStore.close();
         }
         await GetTasks($page.params.id);
     }
+
+    const modal: ModalSettings = {
+        type: "confirm",
+        title: "Please Confirm",
+        body: "This will delete all tasks associated with this board, are you sure you wish to proceed?",
+        response: async (r: boolean) => {
+            r ? await DeleteTask() : modalStore.close();
+        },
+    };
 </script>
 
-<div class="relative card p-4 w-modal shadow-xl space-y-4">
-    <header class="text-2xl font-bold text-center">
-        {isEdit ? "Edit task" : "Create task"}
-    </header>
-    <button
-        class="btn-icon bg-transparent absolute -top-3 -right-0 z-1 focus:outline-0"
-        on:click={parent.onClose}>✕</button
-    >
-    <form
-        on:submit={() => (onSubmit = onFormSubmit())}
-        on:cancel={() => modalStore.close()}
-        class="p-4 space-y-4 rounded-container-token"
-    >
-        <label class="label">
-            <span class="font-bold">Title</span>
-            {#if isEdit}
-                <input
-                    required
-                    class="border-0 input p-1"
-                    type="text"
-                    bind:value={data.title}
-                />
-            {:else}
-                <input
-                    required
-                    class="input p-1"
-                    type="text"
-                    bind:value={data.title}
-                />
-            {/if}
-        </label>
-        <label class="label">
-            <span class="font-bold">Description</span>
-            {#if isEdit}
-                <textarea
-                    rows="4"
-                    class="border-0 textarea p-1 resize-none"
-                    bind:value={data.description}
-                />
-            {:else}
-                <textarea
-                    rows="4"
-                    class="textarea p-1 resize-none"
-                    bind:value={data.description}
-                />
-            {/if}
-        </label>
-        <label class="label hidden">
-            <span class="font-bold">Group</span>
-            <input class="input p-1" type="email" bind:value={data.group} />
-        </label>
-        <label class="label hidden">
-            <span class="font-bold">Tags</span>
-            <InputChip
-                bind:value={data.tags}
-                name="chips"
-                placeholder="Enter tags for custom filtering"
+<form
+    on:submit={() => (onSubmit = onFormSubmit())}
+    on:focusout={async () => await GetTasks($page.params.id)}
+    class="p-6 flex flex-col justify-items-center bg-white h-full"
+>
+    <div class="h-full">
+        <div class="my-4">
+            <input
+                placeholder="Title"
+                required
+                class="border-0 input h3"
+                type="text"
+                bind:value={data.title}
             />
-        </label>
+        </div>
+
+        <div class="my-4">
+            <textarea
+                rows="4"
+                placeholder="Description"
+                class="border-0 textarea resize-none"
+                bind:value={$drawerStore.meta.data.description}
+            />
+        </div>
+        <div class="my-4">
+            <label class="label flex-col">
+                <span class="font-bold">Group</span>
+                <input
+                    class="input w-4/5"
+                    type="text"
+                    bind:value={data.group}
+                />
+            </label>
+        </div>
+        <div class="my-4">
+            <label class="label flex">
+                <span class="font-bold content-center">Tags</span>
+                <InputChip
+                    class="w-4/5 mx-4"
+                    bind:value={data.tags}
+                    name="chips"
+                    placeholder="Enter tags for custom filtering"
+                />
+            </label>
+        </div>
         <label class="label hidden">
             <span class="font-bold">Estimation</span>
-            <input class="input p-1" type="text" bind:value={data.estimation} />
+            <input class="input" type="text" bind:value={data.estimation} />
         </label>
-        <div class="flex flex-row w-full text-sm">
+        <div class="flex flex-row w-full text-sm my-4">
             <div class="grow m-1">
                 <label class="label">
                     <span class="font-bold">Type</span>
@@ -275,42 +264,18 @@
                 </label>
             </div>
         </div>
-        <footer
-            class="flex w-full flex-row {parent.regionFooter} justify-between"
+    </div>
+    <div class="space-y-2 my-4 flex-col">
+        <LoadingButton
+            class="btn btn-sm variant-filled-primary w-full"
+            text="Update"
+            icon={SquarePlus}
+            {isLoading}
+        />
+        <button
+            class="my-2 btn btn-sm variant-ghost-primary w-full"
+            type="button"
+            on:click={() => modalStore.trigger(modal)}>Delete</button
         >
-            <div>
-                {#if isEdit}
-                    <button
-                        class="btn btn-sm variant-ringed-warning"
-                        type="button"
-                        on:click={DeleteTask}>Delete</button
-                    >
-                {/if}
-            </div>
-            <div class="">
-                <button
-                    class="btn btn-sm variant-ghost"
-                    type="reset"
-                    on:click={() => {
-                        modalStore.close();
-                    }}>{parent.buttonTextCancel}</button
-                >
-                {#if isEdit}
-                    <LoadingButton
-                        class="btn btn-sm variant-filled-primary"
-                        text="Update"
-                        icon={SquarePlus}
-                        {isLoading}
-                    />
-                {:else}
-                    <LoadingButton
-                        class="btn btn-sm variant-filled-primary"
-                        text="Create"
-                        icon={SquarePlus}
-                        {isLoading}
-                    />
-                {/if}
-            </div>
-        </footer>
-    </form>
-</div>
+    </div>
+</form>

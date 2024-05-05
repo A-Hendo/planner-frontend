@@ -3,8 +3,26 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body { @apply h-full overflow-hidden; @apply bg-slate-100; }
+html, body { @apply h-full overflow-hidden; background: #f7f7f8; color: black; font-family: "Ubuntu", sans-serif}
 
-.card {@apply bg-white;}
+.card {@apply bg-white; @apply rounded-md;}
 
-input {@apply border; @apply border-primary-500;}
+.select, .textarea, .input {
+    @apply border-black; @apply rounded-md; @apply bg-white;
+    @apply focus:border-primary-500;
+    @apply hover:ring-2 !important; @apply hover:ring-gray-400 !important;
+    @apply focus:ring-primary-500 !important; @apply focus:ring-4 !important;
+    @apply p-0 !important; @apply px-1 !important;
+}
+
+option {
+    @apply bg-white !important; @apply checked:text-black !important;
+}
+
+.btn {@apply rounded-md;}
+
+nav a.btn:hover {@apply variant-soft-primary}
+
+.board-nav {
+    background: #efeff1;
+}

@@ -17,7 +17,7 @@
 
 <button
     on:click={() => drawerStore.open(drawers)}
-    class="block card card-hover p-4 text-center font-bold text-lg text-wrap w-full h-full truncate"
+    class="btn card card-hover p-4 text-center font-bold text-lg text-wrap w-full h-full truncate"
 >
     {title}
 </button>

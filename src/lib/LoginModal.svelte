@@ -6,7 +6,7 @@
         refreshToken,
         user,
     } from "$lib/Stores/User";
-    import { getModalStore } from "@skeletonlabs/skeleton";
+    import { getModalStore, type ModalSettings } from "@skeletonlabs/skeleton";
     import { AxiosError } from "axios";
     import { SendHorizontal, TriangleAlert } from "lucide-svelte";
     import type { SvelteComponent } from "svelte";
@@ -19,12 +19,13 @@
     const data = {
         email: "",
         password: "",
+        redirect: false,
     };
     const modalStore = getModalStore();
 
-    let onLogin: Promise;
+    let onLogin: Promise<void>;
 
-    async function onFormSubmit(): Promise {
+    async function onFormSubmit(): Promise<void> {
         try {
             isLoading = true;
             const response = await Client.post("/login", data);
@@ -33,6 +34,9 @@
             isLoggedIn.set(true);
             modalStore.close();
             GetUserInfo();
+            if ($user?.password_expired) {
+                modalStore.trigger(passwordModal);
+            }
             await goto("/dashboard");
         } catch (error) {
             if (error.response?.status === 400) {
@@ -49,14 +53,33 @@
         Client.get("/user")
             .then((response) => {
                 user.set(response.data);
-                console.log(response.data);
+                $user.initials = $user.username
+                    .split(" ")
+                    .map((word) => word.charAt(0))
+                    .join("");
             })
             .catch((error) => console.log(error));
     }
+
+    export const registerModal: ModalSettings = {
+        type: "component",
+        component: "registerModal",
+    };
+
+    const passwordModal: ModalSettings = {
+        type: "component",
+        component: "passwordModal",
+    };
 </script>
 
-<div class="card p-4 w-modal shadow-xl space-y-4">
-    <header class="text-2xl font-bold text-center">Log in to Lemony</header>
+<div class="relative card p-4 w-modal-slim shadow-xl space-y-4">
+    <button
+        class="btn-icon bg-transparent absolute -top-1 -right-1 z-1 focus:outline-0"
+        on:click={parent.onClose}>✕</button
+    >
+    <header class="text-2xl font-bold text-center align-center justify-center">
+        Log in to NAME
+    </header>
     <form
         on:submit={() => (onLogin = onFormSubmit())}
         class="p-4 space-y-4 rounded-container-token"
@@ -86,17 +109,25 @@
                 bind:value={data.password}
             />
         </label>
-        <footer class="modal-footer justify-end {parent.regionFooter}">
-            <LoadingButton
-                text="Log in"
-                icon={SendHorizontal}
-                {isLoading}
-                class="btn variant-filled-primary order-last m-1"
-            />
-            <button
-                class="btn variant-ghost order-0 m-1"
-                on:click={parent.onClose}>{parent.buttonTextCancel}</button
-            >
+        <footer class="pt-5 modal-footer {parent.regionFooter} flex flex-col">
+            <div class="flex flex-col w-full my-1">
+                <LoadingButton
+                    text="Log in"
+                    icon={SendHorizontal}
+                    {isLoading}
+                    class="btn btn-sm variant-filled-primary order-last m-1 w-full"
+                />
+            </div>
+            <div class="my-1 flex flex-col w-full">
+                <button
+                    type="button"
+                    class="btn btn-sm w-full bg-initial hover:variant-glass-surface"
+                    on:click={() => {
+                        modalStore.close();
+                        modalStore.trigger(registerModal);
+                    }}>Don't have an account? Sign up</button
+                >
+            </div>
         </footer>
     </form>
 </div>
